@@ -18,7 +18,4 @@ bash test/run-nftest.sh test-integration-no-reindex
 ```
 
 The CSV environment expander fails if either fraction variable is unset. The
-MSFragger case leaves the optional spectrum-reference repair disabled; its
-pepXML attribute parser has focused tests in `test/test_msfragger_spectrum_refs.py`.
-`test/smoke.sh` is a separate local workflow check using stand-in executables. `test/test_reindex_mzml.py` checks globally unique scan IDs, matching source-file format metadata, and updated precursor references.
-
+MSFragger case leaves the optional spectrum-reference repair disabled.
