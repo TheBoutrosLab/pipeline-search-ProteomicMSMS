@@ -49,10 +49,6 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../flow-diagram/">Flow Diagram</a>
-                </li>
-              </ul>
-              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../pipeline-steps/">Pipeline Steps</a>
                 </li>
               </ul>
@@ -67,19 +63,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../testing-and-validation/">Testing and Validation</a>
-                </li>
-              </ul>
-              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../references/">References</a>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../discussions/">Discussions</a>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../contributors/">Contributors</a>
                 </li>
               </ul>
               <ul>
@@ -102,7 +86,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Outputs</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/bd27bde12da9d9f1037487921573fa3070316279/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/79b999013589f46a1083469992910eae1f1fb096/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -111,8 +95,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h2 id="outputs">Outputs</h2>
-<!-- List and describe the final output(s) of the pipeline. -->
-
+<p>Final results are saved under <code>&lt;output_dir&gt;/search-ProteomicMSMS-&lt;version&gt;/&lt;sample_name&gt;/OpenMS-&lt;version&gt;/output/</code>:</p>
 <table>
 <thead>
 <tr>
@@ -122,26 +105,31 @@
 </thead>
 <tbody>
 <tr>
-<td>ouput 1</td>
-<td>1 - 2 sentence description of the output.</td>
+<td><code>&lt;sample_name&gt;_&lt;engine&gt;.idXML</code></td>
+<td>Merged, unfiltered identifications for each selected engine.</td>
 </tr>
 <tr>
-<td>ouput 2</td>
-<td>1 - 2 sentence description of the output.</td>
+<td><code>per_fraction/&lt;engine&gt;/</code></td>
+<td>Unfiltered fraction idXML files; MSFragger pepXML files are also retained.</td>
 </tr>
 <tr>
-<td>ouput n</td>
-<td>1 - 2 sentence description of the output.</td>
+<td><code>reindex_mzml/</code></td>
+<td>Reindexed mzML files, when enabled.</td>
+</tr>
+<tr>
+<td><code>*.mzTab</code></td>
+<td>Optional exports from merged idXML.</td>
 </tr>
 </tbody>
 </table>
+<p>Generated INI files are saved under <code>intermediate/</code> when requested. Pipeline and process logs are stored in the corresponding timestamped <code>log-search-ProteomicMSMS-*</code> directory.</p>
 <hr />
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../inputs/" class="btn btn-neutral float-left" title="Inputs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../testing-and-validation/" class="btn btn-neutral float-right" title="Testing and Validation">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../references/" class="btn btn-neutral float-right" title="References">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -171,7 +159,7 @@
       <span><a href="../inputs/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../testing-and-validation/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../references/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
