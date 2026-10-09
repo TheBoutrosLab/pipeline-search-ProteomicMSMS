@@ -95,12 +95,12 @@ def create_openms_ini(data:dict) -> ET.Element:
 def main():
     """ main """
     args = parse_args()
-    with open(args.INPUT, 'rt') as handle:
+    with open(args.INPUT, 'rt', encoding='utf-8') as handle:
         data = json.load(handle)
     ini = create_openms_ini(data)
     dom:minidom.Document = minidom.parseString(ET.tostring(ini, encoding='ISO-8859-1'))
     dom = dom.toprettyxml(indent = '  ')
-    with open(args.OUTPUT, 'w') as handle:
+    with open(args.OUTPUT, 'w', encoding='utf-8') as handle:
         handle.write(dom)
 
 if __name__ == '__main__':

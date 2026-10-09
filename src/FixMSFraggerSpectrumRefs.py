@@ -41,6 +41,7 @@ def scan_to_native_id(pepxml_path):
 
 
 def main():
+    """Replace idXML scan references using the matching pepXML native IDs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-path", required=True)
     parser.add_argument("--input-pepxml", required=True)

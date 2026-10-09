@@ -81,7 +81,10 @@ def main():
             source_file.setNameOfFile(Path(input_path).name)
             source_file.setPathToFile(str(Path(input_path).parent))
             source_files = [source_file]
-        source_files = [set_native_id_format(source_file, thermo_ids) for source_file in source_files]
+        source_files = [
+            set_native_id_format(source_file, thermo_ids)
+            for source_file in source_files
+        ]
 
         for spectrum in exp:
             raw_id = spectrum.getNativeID()
