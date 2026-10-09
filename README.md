@@ -1,159 +1,143 @@
-# Pipeline Name
+# pipeline-search-ProteomicMSMS
 
-[![Prepare release](https://img.shields.io/badge/Action-Create%20New%20Release-blue)](https://github.com/theboutroslab/template-NextflowPipeline/actions/workflows/prepare-release.yaml)
+[![Prepare release](https://img.shields.io/badge/Action-Create%20New%20Release-blue)](https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/actions/workflows/prepare-release.yaml)
 
-- [Pipeline Name](#pipeline-name)
+- [pipeline-search-ProteomicMSMS](#pipeline-search-proteomicmsms)
   - [Overview](#overview)
   - [How To Run](#how-to-run)
-  - [Flow Diagram](#flow-diagram)
   - [Pipeline Steps](#pipeline-steps)
-    - [1. Step/Process 1](#1-stepprocess-1)
-    - [2. Step/Process 2](#2-stepprocess-2)
-    - [3. Step/Process n](#3-stepprocess-n)
   - [Inputs](#inputs)
+    - [Input CSV](#input-csv)
+    - [Config](#config)
   - [Outputs](#outputs)
-  - [Testing and Validation](#testing-and-validation)
-    - [Test Data Set](#test-data-set)
-    - [Validation <version number\>](#validation-version-number)
-    - [Validation Tool](#validation-tool)
   - [References](#references)
-  - [Discussions](#discussions)
-  - [Contributors](#contributors)
   - [License](#license)
+
 ## Overview
 
-A 3-4 sentence summary of the pipeline, including the pipeline's purpose, the type of expected scientific inputs/outputs of the pipeline (e.g: FASTQs and BAMs), and a list of tools/steps in the pipeline.
+This Nextflow DSL2 pipeline searches tandem mass spectra against a supplied target-decoy FASTA. It supports the OpenMS Comet, Sage, and MSFragger adapters. One run processes one label-free sample or one isobaric plex, optionally split across multiple mzML fractions. The pipeline keeps each fraction's unfiltered search results and produces one merged idXML per selected engine. FDR estimation and PSM filtering belong to downstream validation.
 
 ---
 
 ## How To Run
 
-1. Update the params section of the .config file
+1. Create a `.config` using the [template](config/template.config). Set `input_csv`, `output_dir`, `sample_name`, `decoy_database`, and `search_engines`. Review each selected adapter's tolerances, digestion, modifications, decoy naming, and reported hit counts. See [residue modifications](docs/residue-modifications.md).
 
-2. Update the input yaml
+2. Create an input CSV using the [template](input/input.csv). List the fractions of the same sample or plex in order.
 
-3. See the submission script, [here](https://github.com/theboutroslab/tool-submit-nf), to submit your pipeline
+3. If using MSFragger, obtain its JAR separately under its license and set `msfragger_executable`.
 
----
+4. Initialize the Git submodules and run the pipeline with Nextflow, for example:
 
-## Flow Diagram
+   ```bash
+   export NXF_VER=24.10.6
+   export NXF_SYNTAX_PARSER=v1
+   nextflow run TheBoutrosLab/pipeline-search-ProteomicMSMS -r <version> -c config/my-run.config
+   ```
 
-A directed acyclic graph of your pipeline. The [PlantUML](https://plantuml.com/) code defining this diagram is version-controlled in the [docs/](./docs/) folder, and a [GitHub Action](https://github.com/theboutroslab/tool-PlantUML-action) automatically regenerates the SVG image when that file is changed.
+   The supplied configuration template defaults to Docker. Use `-profile apptainer` or `-profile singularity` when appropriate for the execution environment. The `local` profile uses installed executables for development. The [`.env-template`](.env-template) records the Nextflow version used by the shared SBP configuration modules.
 
-![Pipeline Graph](./docs/pipeline-flow.svg)
+> :warning: Run one sample or plex at a time because the fractions in a run are merged into one result per search engine.
 
 ---
 
 ## Pipeline Steps
 
-### 1. Step/Process 1
+```mermaid
+flowchart LR
+  CSV[Fraction mzML CSV] --> R{Reindex spectra?}
+  R -->|Yes| I[Reindex mzML]
+  R -->|No| S[Per-fraction searches]
+  I --> S
+  DB[Target-decoy FASTA] --> S
+  S --> C[Comet]
+  S --> G[Sage]
+  S --> M[MSFragger]
+  C --> O[idXML merge and optional mzTab]
+  G --> O
+  M --> O
+```
 
-> A 2-3 sentence description of each step/proccess in your pipeline that includes the purpose of the step/process, the tool(s) being used and their version, and the expected scientific inputs/outputs (e.g: FASTQs and BAMs) of the pipeline.
+When `reindex_mzml` is enabled, the pipeline assigns globally unique scan numbers across fractions before searching. It preserves Thermo native ID syntax (`controllerType=0 controllerNumber=1 scan=N`) and writes `scan=N` for other input formats. The reindexed mzML files can also be used by downstream quantification.
 
-### 2. Step/Process 2
-
-> A 2-3 sentence description of each step/proccess in your pipeline that includes the purpose of the step/process, the tool(s) being used and their version, and the expected scientific inputs/outputs (e.g: FASTQs and BAMs) of the pipeline.
-
-### 3. Step/Process n
-
-> A 2-3 sentence description of each step/proccess in your pipeline that includes the purpose of the step/process, the tool(s) being used and their version, and the expected scientific inputs/outputs (e.g: FASTQs and BAMs) of the pipeline.
+For each selected engine, `create_json_*` serializes its nested tool configuration, `create_ini_*` writes an OpenMS INI, and `search_database_*` searches each fraction. `merge_idxml` combines the fraction results, and `export_mzTab` optionally exports the merged file. MSFragger can also run `fix_msfragger_spectrum_refs` before merging.
 
 ---
 
 ## Inputs
 
-### Input YAML
+### Input CSV
 
-> include an example of the organization structure within the YAML. Example:
-```yaml
-input 1: 'patient_id'
-input:
-    normal:
-      - id: <normal id>
-        BAM: </path/to/normal.bam>
-    tumor:
-      - id: <tumor id>
-        BAM: </path/to/tumor.bam>
+The CSV has one mzML file per row, in fraction order:
+
+| Field | Required | Description |
+| ----- | -------- | ----------- |
+| `path` | yes | Path to a fraction's mzML file. Relative paths resolve from the CSV directory. |
+
+```csv
+path
+/data/sample_F1.mzML
+/data/sample_F2.mzML
 ```
+
+The FASTA must contain target and decoy sequences with a convention matching each adapter's `PeptideIndexing` settings. The pipeline does not create decoys. Input files should have distinct basenames when `reindex_mzml = false`.
 
 ### Config
 
-| Field | Type | Required | Description |
-| ----- | ---- | ------------ | ------------------------ |
-| param 1 | _type_ | yes/no | 1-2 sentence description of the parameter, including any defaults if any. |
-| param 2 | _type_ | yes/no | 1-2 sentence description of the parameter, including any defaults if any. |
-| param n | _type_ | yes/no | 1-2 sentence description of the parameter, including any defaults if any. |
-| `work_dir` | path | no | Path of working directory for Nextflow. When included in the sample config file, Nextflow intermediate files and logs will be saved to this directory. With ucla_cds, the default is `/scratch` and should only be changed for testing/development. Changing this directory to `/hot` or `/tmp` can lead to high server latency and potential disk space limitations, respectively. |
-
-> Include the optional param `work_dir` in the inputs accompanied by a warning of the potentials dangers of using the param. Update the warning if necessary.
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `input_csv` | string(path) | Path to the input CSV file. |
+| `output_dir` | string(path) | Root output directory. |
+| `sample_name` | string | Name of the one sample or plex processed in this run. |
+| `decoy_database` | string(path) | Target-decoy protein FASTA. |
+| `search_engines` | list(string) | Nonempty subset of `Comet`, `Sage`, and `MSFragger`. |
+| `msfragger_executable` | string(path) | MSFragger JAR; required when that engine is selected. |
+| `CometAdapter`, `SageAdapter`, `MSFraggerAdapter` | namespace | Nested OpenMS adapter settings, converted to INI files. |
+| `comet_default_params` | string(path) | Optional native Comet parameter file. |
+| `reindex_mzml` | bool | Assign unique scan numbers across fractions. Defaults to `true`. |
+| `reindex_mzml_keep_all_metadata` | bool | Preserve metadata when reindexing. Defaults to `true`. |
+| `merge_proteins_add_PSMs` | bool | Merge proteins by accession while retaining PSMs. Defaults to `true`. |
+| `fix_msfragger_spectrum_refs` | bool | Repair references for affected OpenMS/MSFragger combinations. Defaults to `false`. |
+| `export_mzTab` | bool | Export merged idXML files to mzTab. Defaults to `true`. |
+| `export_all_psms` | bool | Include every reported PSM in mzTab exports. Defaults to `true`. |
+| `save_intermediate_files` | bool | Publish generated adapter INI files and other intermediates. Defaults to `false`. |
+| `ucla_cds` | bool | Compatibility flag required by the shared execution setup. Keep `false` outside the legacy UCLA-CDS environment. |
+| `work_dir` | string(path) | Optional location for Nextflow intermediate files. |
+| `base_resource_update` | namespace | Optional per-process CPU and memory multipliers applied to default allocations. |
 
 ---
 
 ## Outputs
 
-<!-- List and describe the final output(s) of the pipeline. -->
+Final results are saved under `<output_dir>/search-ProteomicMSMS-<version>/<sample_name>/OpenMS-<version>/output/`:
 
 | Output | Description |
-| ------------ | ------------------------ |
-| ouput 1 | 1 - 2 sentence description of the output. |
-| ouput 2 | 1 - 2 sentence description of the output. |
-| ouput n | 1 - 2 sentence description of the output. |
+| ------ | ----------- |
+| `<sample_name>_<engine>.idXML` | Merged, unfiltered identifications for each selected engine. |
+| `per_fraction/<engine>/` | Unfiltered fraction idXML files; MSFragger pepXML files are also retained. |
+| `reindex_mzml/` | Reindexed mzML files, when enabled. |
+| `*.mzTab` | Optional exports from merged idXML. |
 
----
-
-## Testing and Validation
-
-### Test Data Set
-
-A 2-3 sentence description of the test data set(s) used to validate and test this pipeline. If possible, include references and links for how to access and use the test dataset
-
-### Validation <version number\>
-
-| Input/Output | Description | Result |
-| ------------ | ------------------------ | ------------------------ |
-| metric 1 | 1 - 2 sentence description of the metric | quantifiable result |
-| metric 2 | 1 - 2 sentence description of the metric | quantifiable result |
-| metric n | 1 - 2 sentence description of the metric | quantifiable result |
-
-- [Reference/External Link/Path 1 to any files/plots or other validation results](<link>)
-- [Reference/External Link/Path 2 to any files/plots or other validation results](<link>)
-- [Reference/External Link/Path n to any files/plots or other validation results](<link>)
-
-### Validation Tool
-
-Included is a template for validating your input files. For more information on the tool check out: https://github.com/theboutroslab/package-PipeVal
+Generated INI files are saved under `intermediate/` when requested. Pipeline and process logs are stored in the corresponding timestamped `log-search-ProteomicMSMS-*` directory.
 
 ---
 
 ## References
 
-1. [Reference 1](<links-to-papers/external-code/documentation/metadata/other-repos/or-anything-else>)
-2. [Reference 2](<links-to-papers/external-code/documentation/metadata/other-repos/or-anything-else>)
-3. [Reference n](<links-to-papers/external-code/documentation/metadata/other-repos/or-anything-else>)
-
----
-
-## Discussions
-
-- [Issue tracker](<link-to-repo-issues-page>) to report errors and enhancement ideas.
-- Discussions can take place in [<pipeline> Discussions](<link-to-repo-discussions-page>)
-- [<pipeline> pull requests](<link-to-repo-pull-requests>) are also open for discussion
-
----
-
-## Contributors
-
-> Update link to repo-specific URL for GitHub Insights Contributors page.
-
-Please see list of [Contributors](https://github.com/theboutroslab/template-NextflowPipeline/graphs/contributors) at GitHub.
+1. Pfeuffer et al. OpenMS 3 enables reproducible analysis of large-scale mass spectrometry data. *Nature Methods*, 21, 365–367 (2024). [doi:10.1038/s41592-024-02197-7](https://doi.org/10.1038/s41592-024-02197-7)
+2. Eng et al. Comet: an open-source MS/MS sequence database search tool. *Proteomics*, 13, 22–24 (2013). [doi:10.1002/pmic.201200439](https://doi.org/10.1002/pmic.201200439)
+3. Kong et al. MSFragger: ultrafast and comprehensive peptide identification in mass spectrometry–based proteomics. *Nature Methods*, 14, 513–520 (2017). [doi:10.1038/nmeth.4256](https://doi.org/10.1038/nmeth.4256)
+4. Lazear. Sage: An Open-Source Tool for Fast Proteomics Searching and Quantification at Scale. *Journal of Proteome Research*, 22, 3652–3659 (2023). [doi:10.1021/acs.jproteome.3c00486](https://doi.org/10.1021/acs.jproteome.3c00486)
 
 ---
 
 ## License
 
-[pipeline name] is licensed under the GNU General Public License version 2. See the file LICENSE for the terms of the GNU GPL license.
+pipeline-search-ProteomicMSMS is licensed under the GNU General Public License version 2. See [LICENSE](LICENSE) for the terms of the GNU GPL license.
 
-<one line to give the program's name and a brief idea of what it does.>
+pipeline-search-ProteomicMSMS
+
+Search tandem mass spectra against a protein database using OpenMS adapters.
 
 Copyright (C) 2026 Sanford Burnham Prebys Medical Discovery Institute ("Boutros Lab")
 

@@ -1,0 +1,10 @@
+Category: "pipeline"
+Description: "Database search of tandem mass spectra from one proteomic sample or plex"
+Maintainers: ["Chenghao Zhu"]
+Contributors: []
+Languages: ["Nextflow", "Python"]
+Dependencies: ["Java", "Nextflow", "Docker"]
+References: ""
+Tools: ["OpenMS-thirdparty:3.5.0", "pyOpenMS:3.5.0", "Comet", "Sage", "MSFragger"]
+Engineering_Owner: []
+Scientific_Owner: []

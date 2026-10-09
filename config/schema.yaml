@@ -1,74 +1,116 @@
----
-dataset_id:
-  type: 'String'
+input_csv:
+  type: Path
+  mode: r
   required: true
-  help: 'Dataset identifier'
-patient_id:
-  type: 'String'
-  required: true
-  help: 'Patient identifier'
-sample_id:
-  type: 'String'
-  required: true
-  help: 'Sample identifier'
-param_name:
-  type: 'String'
-  required: false
-  default: 'foo-bar'
-  help: 'Example pipeline parameter; replace with pipeline-specific parameters'
+  help: CSV with one mzML path per row.
 output_dir:
-  type: 'Path'
-  mode: 'w'
+  type: Path
+  mode: w
   required: true
-  help: 'Absolute path to output directory'
+  help: Root output directory.
+sample_name:
+  type: String
+  required: true
+  help: Name of the single sample or plex processed in this run.
+decoy_database:
+  type: Path
+  mode: r
+  required: true
+  help: Target-decoy protein FASTA used by every search engine.
+msfragger_executable:
+  type: Path
+  mode: r
+  required: false
+  help: Separately obtained MSFragger JAR; required when MSFragger is selected.
+search_engines:
+  type: List
+  required: false
+  choices: [Comet, Sage, MSFragger]
+  help: Search engines to run.
+export_mzTab:
+  type: Bool
+  default: true
+  help: Export merged idXML files to mzTab.
+export_all_psms:
+  type: Bool
+  default: true
+  help: Include all reported PSMs in mzTab exports.
+reindex_mzml:
+  type: Bool
+  default: true
+  help: Assign unique native spectrum IDs across fractions.
+reindex_mzml_keep_all_metadata:
+  type: Bool
+  default: true
+  help: Preserve mzML metadata while reindexing.
+merge_proteins_add_PSMs:
+  type: Bool
+  default: true
+  help: Merge proteins by accession while retaining PSMs.
+fix_msfragger_spectrum_refs:
+  type: Bool
+  default: false
+  help: Repair MSFragger spectrum references for affected OpenMS versions.
+save_intermediate_files:
+  type: Bool
+  default: false
+  help: Publish generated adapter INI files and other intermediates.
+comet_default_params:
+  type: Path
+  mode: r
+  required: false
+  help: Optional native Comet default parameter file.
+CometAdapter:
+  type: Namespace
+  required: false
+  help: OpenMS CometAdapter parameters, nested as in the template.
+SageAdapter:
+  type: Namespace
+  required: false
+  help: OpenMS SageAdapter parameters, nested as in the template.
+MSFraggerAdapter:
+  type: Namespace
+  required: false
+  help: OpenMS MSFraggerAdapter parameters, nested as in the template.
+ucla_cds:
+  type: Bool
+  default: false
+  help: Compatibility flag for the shared execution setup.
+work_dir:
+  type: Path
+  mode: w
+  required: false
+  help: Optional Nextflow working directory.
 apptainer_library:
-  type: 'Path'
-  mode: 'r'
+  type: Path
+  mode: r
   required: false
-  help: 'Absolute path to Apptainer library directory'
+  help: Apptainer library directory.
 apptainer_cache:
-  type: 'Path'
-  mode: 'w'
+  type: Path
+  mode: w
   required: false
-  help: 'Absolute path to Apptainer cache directory'
+  help: Apptainer cache directory.
 singularity_library:
-  type: 'Path'
-  mode: 'r'
+  type: Path
+  mode: r
   required: false
-  help: 'Absolute path to Singularity library directory'
+  help: Singularity library directory.
 singularity_cache:
-  type: 'Path'
-  mode: 'w'
+  type: Path
+  mode: w
   required: false
-  help: 'Absolute path to Singularity cache directory'
+  help: Singularity cache directory.
 base_resource_update:
-  type: 'ResourceUpdateNamespace'
+  type: ResourceUpdateNamespace
   required: false
-  help: 'User-defined modifications for adjusting base resource allocations for processes'
+  help: Per-process CPU and memory allocation multipliers.
   elements:
     memory:
-      type: 'ResourceUpdateList'
+      type: ResourceUpdateList
       required: false
-      help: 'List of memory updates'
+      help: Memory allocation updates.
     cpus:
-      type: 'ResourceUpdateList'
+      type: ResourceUpdateList
       required: false
-      help: 'List of CPU updates'
-input:
-  type: 'InputNamespace'
-  required: true
-  help: 'Input samples'
-  elements:
-    BAM:
-      type: 'InputBAMNamespace'
-      required: true
-      help: 'Input BAM samples grouped by sample type'
-      elements:
-        normal:
-          type: 'BAMEntryList'
-          required: false
-          help: 'Input normal sample'
-        tumor:
-          type: 'BAMEntryList'
-          required: false
-          help: 'Input tumor sample'
+      help: CPU allocation updates.

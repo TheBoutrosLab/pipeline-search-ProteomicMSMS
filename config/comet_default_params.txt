@@ -1,0 +1,98 @@
+# comet_version 2019.01 rev. 5
+# Comet MS/MS search engine parameters file.
+# Everything following the '#' symbol is treated as a comment.
+
+decoy_search = 0                       # 0=no (default), 1=concatenated search, 2=separate search
+peff_format = 0                        # 0=no (normal fasta, default), 1=PEFF PSI-MOD, 2=PEFF Unimod
+peff_obo =                             # path to PSI Mod or Unimod OBO file
+
+
+#
+# masses
+#
+mass_type_parent = 1                   # 0=average masses, 1=monoisotopic masses
+mass_type_fragment = 1                 # 0=average masses, 1=monoisotopic masses
+precursor_tolerance_type = 1           # 0=MH+ (default), 1=precursor m/z; only valid for amu/mmu tolerances
+
+#
+# search enzyme
+#
+search_enzyme_number = 1               # choose from list at end of this params file
+search_enzyme2_number = 0              # second enzyme; set to 0 if no second enzyme
+
+#
+# Up to 9 variable modifications are supported
+# format:  <mass> <residues> <0=variable/else binary> <max_mods_per_peptide> <term_distance> <n/c-term> <required> <neutral_loss>
+#     e.g. 79.966331 STY 0 3 -1 0 0 97.976896
+#
+
+#
+# fragment ions
+#
+# ion trap ms/ms:  1.0005 tolerance, 0.4 offset (mono masses), theoretical_fragment_ions = 1
+# high res ms/ms:    0.02 tolerance, 0.0 offset (mono masses), theoretical_fragment_ions = 0, spectrum_batch_size = 15000
+#
+theoretical_fragment_ions = 0          # 0=use flanking peaks, 1=M peak only
+use_A_ions = 0
+use_B_ions = 1
+use_C_ions = 0
+use_X_ions = 0
+use_Y_ions = 1
+use_Z_ions = 0
+use_NL_ions = 0                        # 0=no, 1=yes to consider NH3/H2O neutral loss peaks
+
+#
+# output
+#
+output_sqtstream = 0                   # 0=no, 1=yes  write sqt to standard output
+output_sqtfile = 0                     # 0=no, 1=yes  write sqt file
+output_txtfile = 0                     # 0=no, 1=yes  write tab-delimited txt file
+output_pepxmlfile = 1                  # 0=no, 1=yes  write pep.xml file
+output_percolatorfile = 0              # 0=no, 1=yes  write Percolator tab-delimited input file
+print_expect_score = 1                 # 0=no, 1=yes to replace Sp with expect in out & sqt
+show_fragment_ions = 0                 # 0=no, 1=yes for out files only
+
+sample_enzyme_number = 1               # Sample enzyme which is possibly different than the one applied to the search.
+                                       # Used to calculate NTT & NMC in pepXML output (default=1 for trypsin).
+
+#
+# mzXML parameters
+#
+scan_range = 0 0                       # start and end scan range to search; either entry can be set independently
+
+#
+# misc parameters
+#
+num_results = 100                      # number of search hits to store internally
+max_duplicate_proteins = -1            # maximum number of protein names to report for each peptide identification; -1 reports all duplicates
+skip_researching = 1                   # for '.out' file output only, 0=search everything again (default), 1=don't search if .out exists
+nucleotide_reading_frame = 0           # 0=proteinDB, 1-6, 7=forward three, 8=reverse three, 9=all six
+equal_I_and_L = 0                      # 0=treat I and L as different; 1=treat I and L as same
+output_suffix =                        # add a suffix to output base names i.e. suffix "-C" generates base-C.pep.xml from base.mzXML input
+precursor_NL_ions =                    # one or more precursor neutral loss masses, will be added to xcorr analysis
+
+#
+# spectral processing
+#
+
+#
+# additional modifications
+#
+
+
+#
+# COMET_ENZYME_INFO _must_ be at the end of this parameters file
+#
+[COMET_ENZYME_INFO]
+0.  No_enzyme              0      -           -
+1.  Trypsin                1      KR          P
+2.  Trypsin/P              1      KR          -
+3.  Lys_C                  1      K           P
+4.  Lys_N                  0      K           -
+5.  Arg_C                  1      R           P
+6.  Asp_N                  0      D           -
+7.  CNBr                   1      M           -
+8.  Glu_C                  1      DE          P
+9.  PepsinA                1      FL          P
+10. Chymotrypsin           1      FWYL        P
+11. No_cut                 1      @           @
