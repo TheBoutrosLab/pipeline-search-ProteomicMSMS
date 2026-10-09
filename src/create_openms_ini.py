@@ -1,4 +1,4 @@
-""" This module converts a JSON or YAML file into OpenMS INI file. For more
+""" Convert a JSON file into an OpenMS INI file. For more
 detail of OpenMS INI file format, see here:
 https://abibuilder.informatik.uni-tuebingen.de/archive/openms/Documentation/
 nightly/html/TOPP_general.html """
@@ -7,6 +7,15 @@ import json
 from pathlib import Path
 from xml.etree import ElementTree as ET
 from xml.dom import minidom
+
+
+EMPTY_LIST_TYPES = {
+    'fixed_modifications': 'string',
+    'variable_modifications': 'string',
+    'unimod': 'string',
+    'masses': 'double',
+    'syntaxes': 'string',
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -21,13 +30,6 @@ def parse_args() -> argparse.Namespace:
         'OUTPUT',
         type=Path,
         help='Output file path'
-    )
-    parser.add_argument(
-        '--input-format',
-        type=str,
-        choices=['JSON', 'YAML'],
-        default='JSON',
-        help='Input file format. Defaults to JSON.'
     )
     return parser.parse_args()
 
@@ -46,7 +48,7 @@ def get_item_type(obj) -> str:
     }
     item_type = obj.__class__.__name__
     if item_type not in mapper:
-        raise ValueError('Value type not sopported')
+        raise ValueError('Value type not supported')
     return mapper[item_type]
 
 def add_subtree(element:ET.Element, data:dict):
@@ -56,7 +58,15 @@ def add_subtree(element:ET.Element, data:dict):
             item_types = {get_item_type(v) for v in val}
             if len(item_types) > 1:
                 raise ValueError('ITEMLIST should have the same type')
-            item_type = item_types.pop()
+            if item_types:
+                item_type = item_types.pop()
+            else:
+                try:
+                    item_type = EMPTY_LIST_TYPES[key]
+                except KeyError as exc:
+                    raise ValueError(
+                        f'Cannot infer the type of empty ITEMLIST {key!r}'
+                    ) from exc
             if item_type == 'bool':
                 val = [encode_bool_to_str(v) for v in val]
             attrib = {

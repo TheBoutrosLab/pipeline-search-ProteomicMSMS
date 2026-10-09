@@ -85,7 +85,7 @@ Protein N-terminal acetylation is also often used as a variable modification.
 variable_modifications = [
 	'Acetyl (Protein N-term)'
 ]
-messes = [
+masses = [
 	42.010565
 ]
 syntaxes = [
