@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Inputs - pipeline-search-ProteomicMSMS</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../css/version-select.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Inputs";
+        var mkdocs_page_input_path = "inputs.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> pipeline-search-ProteomicMSMS
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../how-to-run/">How To Run</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../pipeline-steps/">Pipeline Steps</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Inputs</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#input-csv">Input CSV</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#config">Config</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../outputs/">Outputs</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../references/">References</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">pipeline-search-ProteomicMSMS</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Inputs</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/v1.1.0/README.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="inputs">Inputs</h2>
+<h3 id="input-csv">Input CSV</h3>
+<p>The CSV has one mzML file per row. The <code>sample_name</code> and <code>path</code> columns are required; additional columns are ignored. Rows with the same <code>sample_name</code> are fractions of one sample or plex and are merged in their CSV order:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sample_name</code></td>
+<td>yes</td>
+<td>Sample or plex name, using letters, digits, dots, underscores, or hyphens; must start with a letter or digit.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>yes</td>
+<td>Path to a fraction's mzML file. Relative paths resolve from the CSV directory.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-csv">sample_name,path
+sample-01,/data/sample_01_F1.mzML
+sample-02,/data/sample_02_F1.mzML
+sample-01,/data/sample_01_F2.mzML
+</code></pre>
+<p>The FASTA must contain target and decoy sequences with a convention matching each adapter's <code>PeptideIndexing</code> settings. The pipeline does not create decoys. Fractions of the same sample should have distinct basenames when <code>reindex_mzml = false</code>.</p>
+<h3 id="config">Config</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input_csv</code></td>
+<td>string(path)</td>
+<td>Path to the input CSV file.</td>
+</tr>
+<tr>
+<td><code>output_dir</code></td>
+<td>string(path)</td>
+<td>Root output directory.</td>
+</tr>
+<tr>
+<td><code>decoy_database</code></td>
+<td>string(path)</td>
+<td>Target-decoy protein FASTA.</td>
+</tr>
+<tr>
+<td><code>search_engines</code></td>
+<td>list(string)</td>
+<td>Nonempty subset of <code>Comet</code>, <code>Sage</code>, and <code>MSFragger</code>.</td>
+</tr>
+<tr>
+<td><code>msfragger_executable</code></td>
+<td>string(path)</td>
+<td>MSFragger JAR; required when that engine is selected.</td>
+</tr>
+<tr>
+<td><code>CometAdapter</code>, <code>SageAdapter</code>, <code>MSFraggerAdapter</code></td>
+<td>namespace</td>
+<td>Nested OpenMS adapter settings, converted to INI files.</td>
+</tr>
+<tr>
+<td><code>comet_default_params</code></td>
+<td>string(path)</td>
+<td>Optional native Comet parameter file.</td>
+</tr>
+<tr>
+<td><code>reindex_mzml</code></td>
+<td>bool</td>
+<td>Assign unique scan numbers across fractions of each sample. Defaults to <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>reindex_mzml_keep_all_metadata</code></td>
+<td>bool</td>
+<td>Preserve metadata when reindexing. Defaults to <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>merge_proteins_add_PSMs</code></td>
+<td>bool</td>
+<td>Merge proteins by accession while retaining PSMs. Defaults to <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>fix_msfragger_spectrum_refs</code></td>
+<td>bool</td>
+<td>Repair references for affected OpenMS/MSFragger combinations. Defaults to <code>false</code>.</td>
+</tr>
+<tr>
+<td><code>export_mzTab</code></td>
+<td>bool</td>
+<td>Export merged idXML files to mzTab. Defaults to <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>export_all_psms</code></td>
+<td>bool</td>
+<td>Include every reported PSM in mzTab exports. Defaults to <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>save_intermediate_files</code></td>
+<td>bool</td>
+<td>Publish generated adapter INI files and other intermediates. Defaults to <code>false</code>.</td>
+</tr>
+<tr>
+<td><code>ucla_cds</code></td>
+<td>bool</td>
+<td>Compatibility flag required by the shared execution setup. Keep <code>false</code> outside the legacy UCLA-CDS environment.</td>
+</tr>
+<tr>
+<td><code>work_dir</code></td>
+<td>string(path)</td>
+<td>Optional location for Nextflow intermediate files.</td>
+</tr>
+<tr>
+<td><code>base_resource_update</code></td>
+<td>namespace</td>
+<td>Optional per-process CPU and memory multipliers applied to default allocations.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../pipeline-steps/" class="btn btn-neutral float-left" title="Pipeline Steps"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../outputs/" class="btn btn-neutral float-right" title="Outputs">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/tree/v1.1.0" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../pipeline-steps/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../outputs/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../js/version-select.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
