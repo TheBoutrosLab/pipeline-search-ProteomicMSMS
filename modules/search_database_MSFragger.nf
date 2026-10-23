@@ -14,7 +14,7 @@ process create_json_MSFragger {
 
 process create_ini_MSFragger {
     container params.docker_image_pyopenms
-    publishDir "${params.intermediate_file_dir}/MSFragger", mode: 'copy', pattern: '*.ini', enabled: params.save_intermediate_files
+    publishDir "${params.results_root_dir}/intermediate/MSFragger", mode: 'copy', pattern: '*.ini', enabled: params.save_intermediate_files
     input:
         path config_json
         path script_file
@@ -29,14 +29,14 @@ process create_ini_MSFragger {
 
 process search_database_MSFragger {
     container params.docker_image_openms
-    publishDir "${params.final_output_dir}/per_fraction/MSFragger", mode: 'copy', pattern: '*.{idXML,pepXML}'
+    publishDir "${params.results_root_dir}/${sample}/OpenMS-${params.openms_version}/output/per_fraction/MSFragger", mode: 'copy', pattern: '*.{idXML,pepXML}'
     input:
-        path mzml
+        tuple val(sample), path(mzml)
         path db
         path ini
         path executable
     output:
-        tuple path(output_idxml), path(output_pepxml)
+        tuple val(sample), path(output_idxml), path(output_pepxml)
     script:
         output_idxml = "${mzml.baseName}_MSFragger.idXML"
         output_pepxml = "${mzml.baseName}_MSFragger.pepXML"
@@ -53,12 +53,12 @@ process search_database_MSFragger {
 /** Repair affected OpenMS versions' idXML spectrum references using pepXML. */
 process fix_msfragger_spectrum_refs {
     container params.docker_image_pyopenms
-    publishDir "${params.intermediate_file_dir}/MSFragger", mode: 'copy', pattern: '*.idXML', enabled: params.save_intermediate_files
+    publishDir "${params.results_root_dir}/${sample}/OpenMS-${params.openms_version}/intermediate/MSFragger", mode: 'copy', pattern: '*.idXML', enabled: params.save_intermediate_files
     input:
-        tuple path(input_idxml), path(input_pepxml)
+        tuple val(sample), path(input_idxml), path(input_pepxml)
         path script_file
     output:
-        path output_idxml
+        tuple val(sample), path(output_idxml)
     script:
         output_idxml = "${input_idxml.baseName}_fixedSpectrumRefs.idXML"
         """
@@ -79,8 +79,8 @@ workflow workflow_search_database_MSFragger {
             fix_msfragger_spectrum_refs(search_database_MSFragger.out, file("${projectDir}/src/FixMSFraggerSpectrumRefs.py"))
             idxml = fix_msfragger_spectrum_refs.out
         } else {
-            idxml = search_database_MSFragger.out.map { id, pep -> id }
+            idxml = search_database_MSFragger.out.map { sample, id, pep -> tuple(sample, id) }
         }
-        merge_idxml(idxml.collect(), 'MSFragger')
+        merge_idxml(idxml.groupTuple(), 'MSFragger')
         if (params.export_mzTab) export_mzTab(merge_idxml.out)
 }

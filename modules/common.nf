@@ -66,19 +66,25 @@ def generateAdapterConfig(String adapter) {
     return final_args
 }
 
-/** Read fraction mzML paths in CSV order. One launch is one sample or plex. */
+/** Read mzML paths in CSV order, tagged by sample or plex. */
 def read_input_mzml(String csv_path) {
     def csv = file(csv_path)
     return Channel.fromPath(csv).splitCsv(header: true)
         .map { row ->
-            if (row.size() != 1 || !row.path?.trim()) {
-                throw new IllegalArgumentException('Input CSV must contain exactly one nonempty path column')
+            def columns = row.keySet() as Set
+            if (!columns.containsAll(['sample_name', 'path'])) {
+                throw new IllegalArgumentException('Input CSV must contain sample_name and path columns')
             }
+            def sample = row.sample_name?.trim()
+            if (!(sample ==~ /[A-Za-z0-9][A-Za-z0-9._-]*/)) {
+                throw new IllegalArgumentException("Invalid or missing sample_name: ${sample}")
+            }
+            if (!row.path?.trim()) throw new IllegalArgumentException("Missing mzML path for sample ${sample}")
             def mzml = file(row.path.trim().startsWith('/') ? row.path.trim() : "${csv.parent}/${row.path.trim()}")
             if (!mzml.exists() || !mzml.name.toLowerCase().endsWith('.mzml')) {
                 throw new IllegalArgumentException("Missing mzML input: ${mzml}")
             }
-            return mzml
+            return tuple(sample, mzml)
         }
         .ifEmpty { throw new IllegalArgumentException('Input CSV contains no mzML files') }
 }

@@ -14,7 +14,7 @@ process create_json_Sage {
 
 process create_ini_Sage {
     container params.docker_image_pyopenms
-    publishDir "${params.intermediate_file_dir}/Sage", mode: 'copy', pattern: '*.ini', enabled: params.save_intermediate_files
+    publishDir "${params.results_root_dir}/intermediate/Sage", mode: 'copy', pattern: '*.ini', enabled: params.save_intermediate_files
     input:
         path config_json
         path script_file
@@ -29,13 +29,13 @@ process create_ini_Sage {
 
 process search_database_Sage {
     container params.docker_image_openms
-    publishDir "${params.final_output_dir}/per_fraction/Sage", mode: 'copy', pattern: '*.idXML'
+    publishDir "${params.results_root_dir}/${sample}/OpenMS-${params.openms_version}/output/per_fraction/Sage", mode: 'copy', pattern: '*.idXML'
     input:
-        path mzml
+        tuple val(sample), path(mzml)
         path db, name: 'database.fasta'
         path ini
     output:
-        path output_idxml
+        tuple val(sample), path(output_idxml)
     script:
         output_idxml = "${mzml.baseName}_Sage.idXML"
         """
@@ -52,6 +52,6 @@ workflow workflow_search_database_Sage {
         create_json_Sage()
         create_ini_Sage(create_json_Sage.out, file("${projectDir}/src/create_openms_ini.py"))
         search_database_Sage(mzml_file, file(params.decoy_database), create_ini_Sage.out)
-        merge_idxml(search_database_Sage.out.collect(), 'Sage')
+        merge_idxml(search_database_Sage.out.groupTuple(), 'Sage')
         if (params.export_mzTab) export_mzTab(merge_idxml.out)
 }

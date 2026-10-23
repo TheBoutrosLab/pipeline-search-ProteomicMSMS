@@ -9,7 +9,7 @@
 process merge_mzML_OpenMS {
     container params.docker_image_openms
 
-    publishDir "${params.final_output_dir}",
+    publishDir "${params.results_root_dir}/${sample}/OpenMS-${params.openms_version}/output",
         mode: 'copy',
         pattern: "*.mzML"
 
@@ -19,14 +19,14 @@ process merge_mzML_OpenMS {
         saveAs: { "log${file(it).name}" }
 
     input:
-        file mzml_files
+        tuple val(sample), path(mzml_files)
 
     output:
-        file merged_mzml
+        tuple val(sample), path(merged_mzml)
         file ".command.*"
 
     script:
-    merged_mzml = "${params.sample_name}_merged.mzML"
+    merged_mzml = "${sample}_merged.mzML"
     """
     FileMerger \\
         -in ${mzml_files} \\

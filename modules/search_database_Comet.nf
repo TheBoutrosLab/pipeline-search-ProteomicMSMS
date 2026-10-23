@@ -14,7 +14,7 @@ process create_json_Comet {
 
 process create_ini_Comet {
     container params.docker_image_pyopenms
-    publishDir "${params.intermediate_file_dir}/Comet", mode: 'copy', pattern: '*.ini', enabled: params.save_intermediate_files
+    publishDir "${params.results_root_dir}/intermediate/Comet", mode: 'copy', pattern: '*.ini', enabled: params.save_intermediate_files
     input:
         path config_json
         path script_file
@@ -29,14 +29,14 @@ process create_ini_Comet {
 
 process search_database_Comet {
     container params.docker_image_openms
-    publishDir "${params.final_output_dir}/per_fraction/Comet", mode: 'copy', pattern: '*.idXML'
+    publishDir "${params.results_root_dir}/${sample}/OpenMS-${params.openms_version}/output/per_fraction/Comet", mode: 'copy', pattern: '*.idXML'
     input:
-        path mzml
+        tuple val(sample), path(mzml)
         path db
         path ini
         path default_params
     output:
-        path output_idxml
+        tuple val(sample), path(output_idxml)
     script:
         output_idxml = "${mzml.baseName}_Comet.idXML"
         def defaults = default_params.name == 'NO_FILE' ? '' : "-default_params_file ${default_params}"
@@ -54,6 +54,6 @@ workflow workflow_search_database_Comet {
         create_json_Comet()
         create_ini_Comet(create_json_Comet.out, file("${projectDir}/src/create_openms_ini.py"))
         search_database_Comet(mzml_file, file(params.decoy_database), create_ini_Comet.out, file(params.comet_default_params))
-        merge_idxml(search_database_Comet.out.collect(), 'Comet')
+        merge_idxml(search_database_Comet.out.groupTuple(), 'Comet')
         if (params.export_mzTab) export_mzTab(merge_idxml.out)
 }

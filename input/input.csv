@@ -1,3 +1,4 @@
-path
-/absolute/path/to/fraction_1.mzML
-/absolute/path/to/fraction_2.mzML
+sample_name,path
+sample-01,/absolute/path/to/sample_01_fraction_1.mzML
+sample-01,/absolute/path/to/sample_01_fraction_2.mzML
+sample-02,/absolute/path/to/sample_02_fraction_1.mzML
