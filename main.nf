@@ -1,5 +1,5 @@
 /**
- * Database search of tandem mass spectra from one sample or isobaric plex.
+ * Database search of tandem mass spectra from one or more samples or plexes.
  */
 nextflow.enable.dsl = 2
 
@@ -12,13 +12,15 @@ include { workflow_search_database_MSFragger as workflow_MSFragger } from "${pro
 print_prelogue()
 
 workflow {
-    mzml_file = read_input_mzml(params.input_csv)
+    sample_mzml = read_input_mzml(params.input_csv)
 
     if (params.reindex_mzml) {
-        reindex_mzml(mzml_file.collect(), file("${projectDir}/src/ReindexMzML.py"))
-        individual_mzML = reindex_mzml.out[0].flatten()
+        reindex_mzml(sample_mzml.groupTuple(), file("${projectDir}/src/ReindexMzML.py"))
+        individual_mzML = reindex_mzml.out.flatMap { sample, files ->
+            (files instanceof List ? files : [files]).collect { mzml -> tuple(sample, mzml) }
+        }
     } else {
-        individual_mzML = mzml_file
+        individual_mzML = sample_mzml
     }
 
     if ('Comet' in params.search_engines) {

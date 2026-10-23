@@ -1,3 +1,5 @@
-path
-$SEARCH_MZML_F1
-$SEARCH_MZML_F2
+sample_name,path
+SBP0001,$TEST_DATA_DIR/ecoli_lfq/mzML/LFQ_Orbitrap_DDA_Ecoli_01_indexed-10min-3.mzML
+SBP0001,$TEST_DATA_DIR/ecoli_lfq/mzML/LFQ_Orbitrap_DDA_Ecoli_01_indexed-10min-4.mzML
+SBP0002,$TEST_DATA_DIR/ecoli_lfq/mzML/LFQ_Orbitrap_DDA_Ecoli_02_indexed-10min-3.mzML
+SBP0003,$TEST_DATA_DIR/ecoli_lfq/mzML/LFQ_Orbitrap_DDA_Ecoli_02_indexed-10min-4.mzML

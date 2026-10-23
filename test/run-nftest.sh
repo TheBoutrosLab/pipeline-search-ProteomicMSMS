@@ -21,12 +21,16 @@ fi
 
 : "${SLURM_JOB_ID:?SLURM_JOB_ID is not defined; run this script inside a Slurm job}"
 
-if [[ -f "${ENV_FILE}" ]]; then
-    set -a
-    # shellcheck disable=SC1090
-    source "${ENV_FILE}"
-    set +a
+if [[ ! -f "${ENV_FILE}" ]]; then
+    echo "Missing ${ENV_FILE}; copy .env-template to .env and set TEST_DATA_DIR" >&2
+    exit 1
 fi
+
+set -a
+# shellcheck disable=SC1090
+source "${ENV_FILE}"
+set +a
+: "${TEST_DATA_DIR:?Set TEST_DATA_DIR in .env}"
 
 readonly TEST_DIR="/scratch/${SLURM_JOB_ID}/${TEST_CASE}"
 readonly OUTPUT_DIR="${TEST_DIR}/output"

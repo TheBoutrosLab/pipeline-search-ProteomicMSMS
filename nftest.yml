@@ -7,28 +7,28 @@ global:
 
 cases:
   - name: test-integration-comet
-    message: Search two fractions with Comet and reindexing
+    message: Search multiple samples with Comet and reindexing
     nf_script: main.nf
     nf_config: test/test-integration-comet/test.config
     skip: false
     verbose: true
 
   - name: test-integration-sage
-    message: Search two fractions with Sage and reindexing
+    message: Search multiple samples with Sage and reindexing
     nf_script: main.nf
     nf_config: test/test-integration-sage/test.config
     skip: false
     verbose: true
 
   - name: test-integration-msfragger
-    message: Search two fractions with MSFragger and reindexing
+    message: Search multiple samples with MSFragger and reindexing
     nf_script: main.nf
     nf_config: test/test-integration-msfragger/test.config
     skip: false
     verbose: true
 
   - name: test-integration-no-reindex
-    message: Search two fractions with their original mzML spectrum IDs
+    message: Search multiple samples with their original mzML spectrum IDs
     nf_script: main.nf
     nf_config: test/test-integration-no-reindex/test.config
     skip: false

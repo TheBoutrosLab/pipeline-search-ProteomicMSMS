@@ -2,16 +2,12 @@ input_csv:
   type: Path
   mode: r
   required: true
-  help: CSV with one mzML path per row.
+  help: CSV with sample_name and mzML path columns; other columns are ignored.
 output_dir:
   type: Path
   mode: w
   required: true
   help: Root output directory.
-sample_name:
-  type: String
-  required: true
-  help: Name of the single sample or plex processed in this run.
 decoy_database:
   type: Path
   mode: r
@@ -38,7 +34,7 @@ export_all_psms:
 reindex_mzml:
   type: Bool
   default: true
-  help: Assign unique native spectrum IDs across fractions.
+  help: Assign unique native spectrum IDs across fractions within each sample.
 reindex_mzml_keep_all_metadata:
   type: Bool
   default: true
