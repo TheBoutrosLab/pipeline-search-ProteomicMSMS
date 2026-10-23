@@ -3,7 +3,9 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 2026-10-23
+## [Unreleased]
+
+## [1.1.0] - 2026-10-23
 
 ### Added
 
@@ -18,3 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Schema validation, resource allocation, process logging, and container profiles.
 - Per-fraction unfiltered idXML and MSFragger pepXML retention, merged idXML, and optional mzTab export.
 - Fraction spectrum reindexing with globally unique scan numbers, preserving Thermo native ID syntax when present, and matching native-ID metadata, plus optional MSFragger spectrum reference repair.
+
+[1.0.0]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/releases/tag/v1.0.0
+[1.1.0]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/compare/v1.0.0...v1.1.0
+[unreleased]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/compare/v1.1.0...HEAD
