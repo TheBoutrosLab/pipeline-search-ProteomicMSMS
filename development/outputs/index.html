@@ -86,7 +86,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Outputs</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/79b999013589f46a1083469992910eae1f1fb096/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/bed21b3e2810d88d0507e7aced2ff5aa919af634/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -95,7 +95,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h2 id="outputs">Outputs</h2>
-<p>Final results are saved under <code>&lt;output_dir&gt;/search-ProteomicMSMS-&lt;version&gt;/&lt;sample_name&gt;/OpenMS-&lt;version&gt;/output/</code>:</p>
+<p>For each sample, final results are saved under <code>&lt;output_dir&gt;/search-ProteomicMSMS-&lt;version&gt;/&lt;sample&gt;/OpenMS-&lt;version&gt;/output/</code>:</p>
 <table>
 <thead>
 <tr>
@@ -105,7 +105,7 @@
 </thead>
 <tbody>
 <tr>
-<td><code>&lt;sample_name&gt;_&lt;engine&gt;.idXML</code></td>
+<td><code>&lt;sample&gt;_&lt;engine&gt;.idXML</code></td>
 <td>Merged, unfiltered identifications for each selected engine.</td>
 </tr>
 <tr>
@@ -122,7 +122,7 @@
 </tr>
 </tbody>
 </table>
-<p>Generated INI files are saved under <code>intermediate/</code> when requested. Pipeline and process logs are stored in the corresponding timestamped <code>log-search-ProteomicMSMS-*</code> directory.</p>
+<p>Shared generated INI files are saved under <code>&lt;output_dir&gt;/search-ProteomicMSMS-&lt;version&gt;/intermediate/</code> when requested. Pipeline and process logs are stored in a timestamped <code>log-search-ProteomicMSMS-*</code> directory under the same run root.</p>
 <hr />
               
             </div>

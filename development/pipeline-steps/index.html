@@ -86,7 +86,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Pipeline Steps</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/79b999013589f46a1083469992910eae1f1fb096/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/bed21b3e2810d88d0507e7aced2ff5aa919af634/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -96,7 +96,7 @@
               
                 <h2 id="pipeline-steps">Pipeline Steps</h2>
 <pre><code class="language-mermaid">flowchart LR
-  CSV[Fraction mzML CSV] --&gt; R{Reindex spectra?}
+  CSV[Sample and fraction mzML CSV] --&gt; R{Reindex spectra per sample?}
   R --&gt;|Yes| I[Reindex mzML]
   R --&gt;|No| S[Per-fraction searches]
   I --&gt; S
@@ -108,8 +108,8 @@
   G --&gt; O
   M --&gt; O
 </code></pre>
-<p>When <code>reindex_mzml</code> is enabled, the pipeline assigns globally unique scan numbers across fractions before searching. It preserves Thermo native ID syntax (<code>controllerType=0 controllerNumber=1 scan=N</code>) and writes <code>scan=N</code> for other input formats. The reindexed mzML files can also be used by downstream quantification.</p>
-<p>For each selected engine, <code>create_json_*</code> serializes its nested tool configuration, <code>create_ini_*</code> writes an OpenMS INI, and <code>search_database_*</code> searches each fraction. <code>merge_idxml</code> combines the fraction results, and <code>export_mzTab</code> optionally exports the merged file. MSFragger can also run <code>fix_msfragger_spectrum_refs</code> before merging.</p>
+<p>When <code>reindex_mzml</code> is enabled, the pipeline assigns unique scan numbers across each sample's fractions before searching. It preserves Thermo native ID syntax (<code>controllerType=0 controllerNumber=1 scan=N</code>) and writes <code>scan=N</code> for other input formats. Scan numbers may repeat between samples. The reindexed mzML files can also be used by downstream quantification.</p>
+<p>For each selected engine, <code>create_json_*</code> serializes its nested tool configuration, <code>create_ini_*</code> writes an OpenMS INI, and <code>search_database_*</code> searches each fraction. <code>merge_idxml</code> combines fractions separately for each sample, and <code>export_mzTab</code> optionally exports each merged file. MSFragger can also run <code>fix_msfragger_spectrum_refs</code> before merging.</p>
 <hr />
               
             </div>
