@@ -86,7 +86,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">How To Run</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/2df53f041d77c3dead9d15188610a2a35019b2d8/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/a5cd8f792ebac70ce166c70ffc7ddc1ba6d427b8/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -97,10 +97,10 @@
                 <h2 id="how-to-run">How To Run</h2>
 <ol>
 <li>
-<p>Create a <code>.config</code> using the <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/2df53f041d77c3dead9d15188610a2a35019b2d8/config/template.config">template</a>. Set <code>input_csv</code>, <code>output_dir</code>, <code>decoy_database</code>, and <code>search_engines</code>. Review each selected adapter's tolerances, digestion, modifications, decoy naming, and reported hit counts. See <a href="../residue-modifications/">residue modifications</a>.</p>
+<p>Create a <code>.config</code> using the <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/a5cd8f792ebac70ce166c70ffc7ddc1ba6d427b8/config/template.config">template</a>. Set <code>input_csv</code>, <code>output_dir</code>, <code>decoy_database</code>, and <code>search_engines</code>. Review each selected adapter's tolerances, digestion, modifications, decoy naming, and reported hit counts. See <a href="../residue-modifications/">residue modifications</a>.</p>
 </li>
 <li>
-<p>Create an input CSV using the <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/2df53f041d77c3dead9d15188610a2a35019b2d8/input/input.csv">template</a>. Give each row a sample or plex name and an mzML path. List each sample's fractions in order.</p>
+<p>Create an input CSV using the <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/a5cd8f792ebac70ce166c70ffc7ddc1ba6d427b8/input/input.csv">template</a>. Give each row a sample or plex name and an mzML path. List each sample's fractions in order.</p>
 </li>
 <li>
 <p>If using MSFragger, obtain its JAR separately under its license and set <code>msfragger_executable</code>.</p>
@@ -113,7 +113,7 @@
    export NXF_VER=24.10.6
    export NXF_SYNTAX_PARSER=v1
    nextflow run TheBoutrosLab/pipeline-search-ProteomicMSMS -r &lt;version&gt; -c config/my-run.config</code></p>
-<p>The supplied configuration template defaults to Docker. Use <code>-profile apptainer</code> or <code>-profile singularity</code> when appropriate for the execution environment. The <code>local</code> profile uses installed executables for development. The <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/2df53f041d77c3dead9d15188610a2a35019b2d8/.env-template"><code>.env-template</code></a> records the Nextflow version and parser used by the shared SBP configuration modules, along with the root for external integration test data.</p>
+<p>The supplied configuration template defaults to Docker. Use <code>-profile apptainer</code> or <code>-profile singularity</code> when appropriate for the execution environment. The <code>local</code> profile uses installed executables for development. The <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/a5cd8f792ebac70ce166c70ffc7ddc1ba6d427b8/.env-template"><code>.env-template</code></a> records the Nextflow version and parser used by the shared SBP configuration modules, along with the root for external integration test data.</p>
 <hr />
               
             </div>

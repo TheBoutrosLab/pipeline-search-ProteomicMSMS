@@ -86,7 +86,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Pipeline Steps</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/2df53f041d77c3dead9d15188610a2a35019b2d8/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/a5cd8f792ebac70ce166c70ffc7ddc1ba6d427b8/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -109,7 +109,7 @@
   M --&gt; O
 </code></pre>
 <p>When <code>reindex_mzml</code> is enabled, the pipeline assigns unique scan numbers across each sample's fractions before searching. It preserves Thermo native ID syntax (<code>controllerType=0 controllerNumber=1 scan=N</code>) and writes <code>scan=N</code> for other input formats. Scan numbers may repeat between samples. The reindexed mzML files can also be used by downstream quantification.</p>
-<p>For each selected engine, <code>create_json_*</code> serializes its nested tool configuration, <code>create_ini_*</code> writes an OpenMS INI, and <code>search_database_*</code> searches each fraction. <code>merge_idxml</code> combines fractions separately for each sample, and <code>export_mzTab</code> optionally exports each merged file. MSFragger can also run <code>fix_msfragger_spectrum_refs</code> before merging.</p>
+<p>For each selected engine, <code>create_json_*</code> serializes its nested tool configuration, <code>create_ini_*</code> writes an OpenMS INI, and <code>search_database_*</code> searches each fraction. <code>merge_idxml</code> combines fractions separately for each sample, and <code>export_mzTab</code> optionally exports each merged file. MSFragger can also run <code>fix_msfragger_spectrum_refs</code> before merging. Its fraction idXML files are then annotated with FAIMS compensation voltage from the matching mzML spectra; non-FAIMS files pass through unchanged. FAIMS runs fail if an identification's spectrum reference is missing or ambiguous, its voltage is unavailable, or an existing <code>FAIMS_CV</code> conflicts with the mzML.</p>
 <hr />
               
             </div>
