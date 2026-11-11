@@ -58,7 +58,7 @@ flowchart LR
 
 When `reindex_mzml` is enabled, the pipeline assigns unique scan numbers across each sample's fractions before searching. It preserves Thermo native ID syntax (`controllerType=0 controllerNumber=1 scan=N`) and writes `scan=N` for other input formats. Scan numbers may repeat between samples. The reindexed mzML files can also be used by downstream quantification.
 
-For each selected engine, `create_json_*` serializes its nested tool configuration, `create_ini_*` writes an OpenMS INI, and `search_database_*` searches each fraction. `merge_idxml` combines fractions separately for each sample, and `export_mzTab` optionally exports each merged file. MSFragger can also run `fix_msfragger_spectrum_refs` before merging.
+For each selected engine, `create_json_*` serializes its nested tool configuration, `create_ini_*` writes an OpenMS INI, and `search_database_*` searches each fraction. `merge_idxml` combines fractions separately for each sample, and `export_mzTab` optionally exports each merged file. MSFragger can also run `fix_msfragger_spectrum_refs` before merging. Its fraction idXML files are then annotated with FAIMS compensation voltage from the matching mzML spectra; non-FAIMS files pass through unchanged. FAIMS runs fail if an identification's spectrum reference is missing or ambiguous, its voltage is unavailable, or an existing `FAIMS_CV` conflicts with the mzML.
 
 ---
 
@@ -113,7 +113,7 @@ For each sample, final results are saved under `<output_dir>/search-ProteomicMSM
 | Output | Description |
 | ------ | ----------- |
 | `<sample>_<engine>.idXML` | Merged, unfiltered identifications for each selected engine. |
-| `per_fraction/<engine>/` | Unfiltered fraction idXML files; MSFragger pepXML files are also retained. |
+| `per_fraction/<engine>/` | Unfiltered fraction idXML files; MSFragger idXML files have FAIMS annotations, and its pepXML files are also retained. |
 | `reindex_mzml/` | Reindexed mzML files, when enabled. |
 | `*.mzTab` | Optional exports from merged idXML. |
 
