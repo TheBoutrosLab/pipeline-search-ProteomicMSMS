@@ -13,17 +13,17 @@ process create_json_Sage {
 }
 
 process create_ini_Sage {
+    containerOptions params.project_script_mount_options
     container params.docker_image_pyopenms
     publishDir "${params.results_root_dir}/intermediate/Sage", mode: 'copy', pattern: '*.ini', enabled: params.save_intermediate_files
     input:
         path config_json
-        path script_file
     output:
         path 'SageAdapter.ini'
     script:
         """
         set -euo pipefail
-        python ${script_file} ${config_json} SageAdapter.ini
+        python ${projectDir}/src/create_openms_ini.py ${config_json} SageAdapter.ini
         """
 }
 
@@ -50,7 +50,7 @@ workflow workflow_search_database_Sage {
         mzml_file
     main:
         create_json_Sage()
-        create_ini_Sage(create_json_Sage.out, file("${projectDir}/src/create_openms_ini.py"))
+        create_ini_Sage(create_json_Sage.out)
         search_database_Sage(mzml_file, file(params.decoy_database), create_ini_Sage.out)
         merge_idxml(search_database_Sage.out.groupTuple(), 'Sage')
         if (params.export_mzTab) export_mzTab(merge_idxml.out)

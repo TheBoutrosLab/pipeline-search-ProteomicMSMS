@@ -3,10 +3,12 @@
 Some pepXML imports retain ``scan=<start_scan>`` instead of the mzML native ID.
 MSFragger records that native ID on each ``spectrum_query`` element.
 """
+# pylint: disable=no-name-in-module
 
 import argparse
 import xml.etree.ElementTree as ET
 
+import pyopenms
 from pyopenms import IdXMLFile
 
 
@@ -49,12 +51,13 @@ def main():
     args = parser.parse_args()
 
     protein_ids = []
-    peptide_ids = []
+    peptide_ids = (pyopenms.PeptideIdentificationList()
+                   if hasattr(pyopenms, "PeptideIdentificationList") else [])
     IdXMLFile().load(args.input_path, protein_ids, peptide_ids)
     mapping = scan_to_native_id(args.input_pepxml)
     native_ids = set(mapping.values())
 
-    for peptide in peptide_ids:
+    for index, peptide in enumerate(peptide_ids):
         if not peptide.metaValueExists("spectrum_reference"):
             raise ValueError("Peptide identification has no spectrum_reference")
         reference = peptide.getMetaValue("spectrum_reference")
@@ -62,6 +65,7 @@ def main():
             reference = reference.decode("utf-8")
         if reference in mapping:
             peptide.setMetaValue("spectrum_reference", mapping[reference])
+            peptide_ids[index] = peptide
         elif reference not in native_ids:
             raise ValueError(f"Cannot resolve spectrum_reference {reference!r}")
 

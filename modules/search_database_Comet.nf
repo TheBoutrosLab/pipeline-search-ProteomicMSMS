@@ -13,17 +13,17 @@ process create_json_Comet {
 }
 
 process create_ini_Comet {
+    containerOptions params.project_script_mount_options
     container params.docker_image_pyopenms
     publishDir "${params.results_root_dir}/intermediate/Comet", mode: 'copy', pattern: '*.ini', enabled: params.save_intermediate_files
     input:
         path config_json
-        path script_file
     output:
         path 'CometAdapter.ini'
     script:
         """
         set -euo pipefail
-        python ${script_file} ${config_json} CometAdapter.ini
+        python ${projectDir}/src/create_openms_ini.py ${config_json} CometAdapter.ini
         """
 }
 
@@ -52,7 +52,7 @@ workflow workflow_search_database_Comet {
         mzml_file
     main:
         create_json_Comet()
-        create_ini_Comet(create_json_Comet.out, file("${projectDir}/src/create_openms_ini.py"))
+        create_ini_Comet(create_json_Comet.out)
         search_database_Comet(mzml_file, file(params.decoy_database), create_ini_Comet.out, file(params.comet_default_params))
         merge_idxml(search_database_Comet.out.groupTuple(), 'Comet')
         if (params.export_mzTab) export_mzTab(merge_idxml.out)

@@ -15,7 +15,7 @@ workflow {
     sample_mzml = read_input_mzml(params.input_csv)
 
     if (params.reindex_mzml) {
-        reindex_mzml(sample_mzml.groupTuple(), file("${projectDir}/src/ReindexMzML.py"))
+        reindex_mzml(sample_mzml.groupTuple())
         individual_mzML = reindex_mzml.out.flatMap { sample, files ->
             (files instanceof List ? files : [files]).collect { mzml -> tuple(sample, mzml) }
         }
