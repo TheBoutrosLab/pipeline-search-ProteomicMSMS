@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-10
+
 ### Fixed
 
 - Annotate MSFragger peptide identifications with source spectrum FAIMS compensation voltage before fraction merging, and fail on unresolved or conflicting FAIMS references.
@@ -27,4 +29,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [1.0.0]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/releases/tag/v1.0.0
 [1.1.0]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/compare/v1.0.0...v1.1.0
-[unreleased]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/compare/v1.1.0...HEAD
+[1.1.1]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/compare/v1.1.0...v1.1.1
+[unreleased]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/compare/v1.1.1...HEAD
