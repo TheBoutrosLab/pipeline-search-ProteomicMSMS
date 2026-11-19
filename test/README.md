@@ -12,15 +12,22 @@ settings, and set `TEST_DATA_DIR=/data/user/czhu/data/pipeline_test_data` as
 the only test-data variable. The mzML files,
 target-decoy FASTA under `database/`, and `MSFragger-4.4.1.jar` are resolved
 relative to that directory. The test configs use the FASTA's `rev_` decoy
-prefix. Run
-from the repository root inside a Slurm job, for example:
+prefix. Run from the repository root with NFTest, PyYAML, and python-dotenv
+installed, for example:
 
 ```bash
-bash test/run-nftest.sh test-integration-comet
-bash test/run-nftest.sh test-integration-sage
-bash test/run-nftest.sh test-integration-msfragger
-bash test/run-nftest.sh test-integration-no-reindex
+python3 test/run-nftest.py test-integration-comet
+python3 test/run-nftest.py test-integration-sage
+python3 test/run-nftest.py test-integration-msfragger
+python3 test/run-nftest.py test-integration-no-reindex
 ```
+
+Set `NFT_CLUSTER=boutroslab_aws` inside an AWS Slurm job to run under
+`$NFT_RUN_ROOT/$SLURM_JOB_ID`. Set `NFT_CLUSTER=pines` to use `$NFT_RUN_ROOT`
+directly with Apptainer. With no cluster selected, the default Docker profile
+is used. Relative `NFT_RUN_ROOT` paths resolve against the repository; an unset
+root defaults there. Results go to `<run-root>/<test-case>/`, with temporary
+files under `<run-root>/.nftest-temp/`.
 
 The CSV environment expander fails if `TEST_DATA_DIR` is unset. The
 MSFragger case leaves the optional spectrum-reference repair disabled.
