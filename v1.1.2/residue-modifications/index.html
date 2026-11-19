@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Modifications - pipeline-search-ProteomicMSMS</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../css/version-select.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Modifications";
+        var mkdocs_page_input_path = "residue-modifications.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> pipeline-search-ProteomicMSMS
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../how-to-run/">How To Run</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../pipeline-steps/">Pipeline Steps</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../inputs/">Inputs</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../outputs/">Outputs</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../references/">References</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">pipeline-search-ProteomicMSMS</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Modifications</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/blob/v1.1.2/README.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="modifications">Modifications</h1>
+<h2 id="general">General</h2>
+<p>For Comet and Sage, amino acid residue modifications can be specified using <code>variable_modifications</code> and <code>fixed_modifications</code>. Both accept a list of <a href="http://www.unimod.org">unimod</a> terms. See <a href="https://abibuilder.informatik.uni-tuebingen.de/archive/openms/Documentation/nightly/html/TOPP_CometAdapter.html">here</a> under <code>variable_modifications</code> to see a complete list of supported modification terms.</p>
+<p>Example:</p>
+<pre><code class="language-groovy">variable_modifications = [
+    'Oxidation (M)'
+]
+fixed_modifications = [
+    'Carbamidomethyl (C)'
+]
+</code></pre>
+<p>MSFragger, however, uses its own syntax to specify residue modifications. For variable modifications, the syntax is <code>&lt;mass&gt; &lt;position&gt;</code>. See <a href="https://github.com/Nesvilab/MSFragger/wiki/Setting-the-Parameters#variable_mod_01--16">here</a>. The syntax for position is explained below.</p>
+<pre><code>* is used to represent any amino acid
+^ is used to represent a terminus
+[ is a modifier for protein N-terminal
+] is a modifier for protein C-terminal
+n is a modifier for peptide N-terminal
+c is a modifier for peptide C-terminal
+</code></pre>
+<p>In the config file of this pipeline, we specify masses and positions separately as what is used by MSFraggerAdapper from OpenMS. The example below is equivalent of '15.99491 M 3' (oxidation (M))</p>
+<pre><code class="language-groovy">masses = [
+    15.99491
+]
+syntaxes = [
+    'M 3'
+]
+</code></pre>
+<p>The 'position' part can also take an integer to specify the max occurrence per peptide. For example, the example above means there can be up to 3 oxiation on methinione per peptide.</p>
+<p>Fixed modifications are specified in MSFragger as the exact mass being added to the particular amino acid residue. The example below adds the TMT6/TMT10/TMT11 tag to all lysine residue. For TMT16/18, use 'add_k_lysine = 304.207146'.</p>
+<pre><code class="language-groovy">add_K_lysine = 229.162932
+</code></pre>
+<p>The mass of the modification can be found from <a href="http://www.unimod.org">unimode</a>.</p>
+<blockquote>
+<p>:warning: Make sure to use the Monoisotopic mass!</p>
+</blockquote>
+<h2 id="modification-for-isobaric-labels">Modification for isobaric labels</h2>
+<p>For isobaric labelled experiments, the corresponding modification <strong>MUST</strong> be specified. The unimod term and monoisotopic mass can be found from <a href="http://www.unimod.org">unimode</a>. Some types of TMT/iTRAQ plex don't have a corresponding unimod term because they share the same molecule structure and mass with others. For example, The molecular tag of TMT10 and TMT11 is the same as TMT6, thus the term <code>TMT6plex</code> can be used for them.</p>
+<p>Isobaric labels are usually added to the peptide N-terminus, lysine, and serine residues. We recommand to set fixed modification for N-terminal and lysine and variable modification on serine. If you would like to access the label efficiency, the N-terminal modification can be set to variable.</p>
+<h2 id="recommended-modifications">Recommended Modifications</h2>
+<p>We recommend to include methionine oxidation, peptide N-terminal glutamine deamidation as variable modification and cysteine carbamidomethylation (product of disulfide bond cleavage) in every search.</p>
+<pre><code class="language-groovy">variable_modifications = [
+    'Oxidation (M)',
+    'Gln-&gt;pyro-Glu (N-term Q)'
+]
+fixed_modifications = [
+    'Carbamidomethyl (C)'
+]
+
+masses = [
+    15.99491,         // Oxidation (M)
+    -17.026549        // Gln-&gt;pyro-Glu (N-term Q)
+]
+syntaxes = [
+    'M 3',            // Oxidation (M)
+    'nQ 1'            // Gln-&gt;pyro-Glu (N-term Q)
+]
+add_C_cysteine = 57.021464
+</code></pre>
+<p>Protein N-terminal acetylation is also often used as a variable modification.</p>
+<pre><code class="language-groovy">variable_modifications = [
+    'Acetyl (Protein N-term)'
+]
+masses = [
+    42.010565
+]
+syntaxes = [
+    '[^ 1'
+]
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/tree/v1.1.2" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../js/version-select.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
