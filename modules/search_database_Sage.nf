@@ -40,6 +40,8 @@ process search_database_Sage {
         output_idxml = "${mzml.baseName}_Sage.idXML"
         """
         set -euo pipefail
+        export OPENMS_TMPDIR="\$(pwd -P)/.openms-tmp"
+        mkdir -p "\$OPENMS_TMPDIR"
         SageAdapter -in ${mzml} -out ${output_idxml} -threads ${task.cpus} \\
           -database ${db} -sage_executable sage -ini ${ini}
         """

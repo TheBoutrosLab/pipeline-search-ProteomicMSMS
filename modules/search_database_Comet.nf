@@ -42,6 +42,8 @@ process search_database_Comet {
         def defaults = default_params.name == 'NO_FILE' ? '' : "-default_params_file ${default_params}"
         """
         set -euo pipefail
+        export OPENMS_TMPDIR="\$(pwd -P)/.openms-tmp"
+        mkdir -p "\$OPENMS_TMPDIR"
         CometAdapter -in ${mzml} -out ${output_idxml} -threads ${task.cpus} \\
           -database ${db} -ini ${ini} ${defaults}
         """

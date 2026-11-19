@@ -43,6 +43,8 @@ process search_database_MSFragger {
         def heap = Math.max(1024, (task.memory.toMega() * 0.8) as int)
         """
         set -euo pipefail
+        export OPENMS_TMPDIR="\$(pwd -P)/.openms-tmp"
+        mkdir -p "\$OPENMS_TMPDIR"
         MSFraggerAdapter -in \$(pwd)/${mzml} -out ${output_idxml} \\
           -opt_out ${output_pepxml} -threads ${task.cpus} \\
           -database \$(pwd)/${db} -executable \$(pwd)/${executable} \\

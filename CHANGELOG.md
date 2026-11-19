@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Replace the Slurm-only NFTest shell runner with a Python runner for AWS, Pines, and local tests.
+
+### Fixed
+
+- Isolate OpenMS temporary files for each parallel MSFragger, Comet, and Sage search task.
+
 ## [1.1.1] - 2026-11-10
 
 ### Fixed
