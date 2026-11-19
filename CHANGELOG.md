@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-11-19
+
 ### Changed
 
 - Replace the Slurm-only NFTest shell runner with a Python runner for AWS, Pines, and local tests.
@@ -38,4 +40,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.0]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/releases/tag/v1.0.0
 [1.1.0]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/compare/v1.0.0...v1.1.0
 [1.1.1]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/compare/v1.1.0...v1.1.1
-[unreleased]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/compare/v1.1.1...HEAD
+[1.1.2]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/compare/v1.1.1...v1.1.2
+[unreleased]: https://github.com/TheBoutrosLab/pipeline-search-ProteomicMSMS/compare/v1.1.2...HEAD
